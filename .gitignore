@@ -1,11 +1,20 @@
+
 SDK/Disk.SDK.Provider (.NET 4.0)/obj/*
 SDK/Disk.SDK.Provider (WinPhone)/obj/*
 SDK/Disk.SDK.Provider (WinRT)/bin/*
 SDK/Disk.SDK.Provider (WinRT)/obj/*
 SDK/Disk.Sdk/obj/*
+SDK/Disk.SDK.NETStandard2/bin/*
+SDK/Disk.SDK.NETStandard2/obj/*
+SDK/Disk.SDK.Provider (UWP)/bin/*
+SDK/Disk.SDK.Provider (UWP)/obj/*
 Samples/SdkSample.WPF/bin/*
 Samples/SdkSample.WPF/obj/*
 Samples/SdkSample.WinPhone/bin/*
 Samples/SdkSample.WinPhone/obj/*
 Samples/SdkSample.WinRT/bin/*
 Samples/SdkSample.WinRT/obj/*
+Samples/SdkSample.UWP/bin/*
+Samples/SdkSample.UWP/obj/*
+SDK/.vs/*
+Samples/.vs/*

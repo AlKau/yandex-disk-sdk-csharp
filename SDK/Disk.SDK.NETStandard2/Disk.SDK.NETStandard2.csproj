@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Disk.SDK</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="Utils\WebdavResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WebdavResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Utils\WebdavResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>WebdavResources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>Disk.SDK.Utils</CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

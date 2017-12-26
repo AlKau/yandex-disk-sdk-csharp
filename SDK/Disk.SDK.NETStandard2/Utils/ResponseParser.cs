@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -70,7 +71,11 @@ namespace Disk.SDK.Utils
                                     break;
                                 case "d:getcontentlength":
                                     reader.Read();
-                                    itemInfo.ContentLength = int.Parse(reader.Value);
+                                    itemInfo.ContentLength = 0;
+                                    if (int.TryParse(reader.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out int length))
+                                    {
+                                        itemInfo.ContentLength = length;
+                                    }
                                     break;
                                 case "d:getcontenttype":
                                     reader.Read();

@@ -18,3 +18,5 @@ Samples/SdkSample.UWP/bin/*
 Samples/SdkSample.UWP/obj/*
 SDK/.vs/*
 Samples/.vs/*
+Samples/SdkSample.UWP/AppPackages/
+Samples/SdkSample.UWP/SdkSample.UWP.csproj.user

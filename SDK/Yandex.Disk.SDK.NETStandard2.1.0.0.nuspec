@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Yandex.Disk.SDK.NETStandard2</id>
+        <version>1.0.0</version>
+        <title>Yandex Disk SDK (NETStandard2)</title>
+        <authors>AlKau</authors>
+        <licenseUrl>https://yandex.ru/legal/sdk_agreement/</licenseUrl>
+        <projectUrl>https://github.com/AlKau/yandex-disk-sdk-csharp.git</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Yandex Disk SDK</description>
+        <tags>disk, cloud, yandex</tags>
+        <dependencies />
+    </metadata>
+    <files>
+        <file src="Disk.SDK.NETStandard2\bin\Release\netstandard2.0\Disk.SDK.NETStandard2.dll" target="lib\uap10.0\Disk.SDK.NETStandard2.dll" />
+    </files>
+</package>

@@ -115,12 +115,9 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.0.5</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Disk.SDK.NETStandard2\Disk.SDK.NETStandard2.csproj">
-      <Project>{fe5209e0-61b3-4635-af5d-77a437b6439f}</Project>
-      <Name>Disk.SDK.NETStandard2</Name>
-    </ProjectReference>
+    <PackageReference Include="Yandex.Disk.SDK.NETStandard2">
+      <Version>1.0.0</Version>
+    </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

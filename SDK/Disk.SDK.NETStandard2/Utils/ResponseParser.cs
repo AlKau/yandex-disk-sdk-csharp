@@ -59,11 +59,19 @@ namespace Disk.SDK.Utils
                                     break;
                                 case "d:creationdate":
                                     reader.Read();
-                                    itemInfo.CreationDate = DateTime.Parse(reader.Value);
+                                    itemInfo.CreationDate = new DateTime();
+                                    if (DateTime.TryParse(reader.Value, out DateTime creationdate))
+                                    {
+                                        itemInfo.CreationDate = creationdate;
+                                    }
                                     break;
                                 case "d:getlastmodified":
                                     reader.Read();
-                                    itemInfo.LastModified = DateTime.Parse(reader.Value);
+                                    itemInfo.LastModified = new DateTime();
+                                    if(DateTime.TryParse(reader.Value, out DateTime lastmodified))
+                                    {
+                                        itemInfo.LastModified = lastmodified;
+                                    }
                                     break;
                                 case "d:displayname":
                                     reader.Read();
@@ -72,7 +80,7 @@ namespace Disk.SDK.Utils
                                 case "d:getcontentlength":
                                     reader.Read();
                                     itemInfo.ContentLength = 0;
-                                    if (int.TryParse(reader.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out int length))
+                                    if (long.TryParse(reader.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out long length))
                                     {
                                         itemInfo.ContentLength = length;
                                     }

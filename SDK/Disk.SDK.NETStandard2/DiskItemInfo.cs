@@ -27,7 +27,7 @@ namespace Disk.SDK
         /// Gets or sets the length of the content.
         /// </summary>
         /// <value>The length of the content.</value>
-        public int ContentLength { get; set; }
+        public long ContentLength { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the content (mime-type of the file).
@@ -134,7 +134,7 @@ namespace Disk.SDK
             {
                 int hashCode = (this.OriginalDisplayName != null ? this.OriginalDisplayName.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (this.OriginalFullPath != null ? this.OriginalFullPath.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ this.ContentLength;
+                hashCode = (hashCode * 397) ^ this.ContentLength.GetHashCode();
                 hashCode = (hashCode * 397) ^ this.LastModified.GetHashCode();
                 hashCode = (hashCode * 397) ^ this.CreationDate.GetHashCode();
                 return hashCode;

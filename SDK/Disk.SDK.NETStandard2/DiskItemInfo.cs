@@ -27,7 +27,7 @@ namespace Disk.SDK
         /// Gets or sets the length of the content.
         /// </summary>
         /// <value>The length of the content.</value>
-        public long ContentLength { get; set; }
+        public ulong ContentLength { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the content (mime-type of the file).

@@ -148,6 +148,14 @@
   <data name="DeleteMethod" xml:space="preserve">
     <value>DELETE</value>
   </data>
+  <data name="DiskSpaceBody" xml:space="preserve">
+    <value>&lt;d:propfind xmlns:d="DAV:"&gt;
+  &lt;d:prop&gt;
+    &lt;d:quota-available-bytes/&gt;
+    &lt;d:quota-used-bytes/&gt;
+  &lt;/d:prop&gt;
+&lt;/d:propfind&gt;</value>
+  </data>
   <data name="GetMethod" xml:space="preserve">
     <value>GET</value>
   </data>

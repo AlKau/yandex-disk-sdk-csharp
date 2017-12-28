@@ -75,6 +75,12 @@ namespace Disk.SDK
         public event EventHandler<GenericSdkEventArgs<string>> IsPublishedCompleted;
 
         /// <summary>
+        /// Occurs when the checking access operation completes.
+        /// <param>available-bytes and used-bytes</param>
+        /// </summary>
+        public event EventHandler<GenericSdkEventArgs<Tuple<ulong, ulong>>> GetDiskSpaceCompleted;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DiskSdkClient"/> class.
         /// </summary>
         public DiskSdkClient()
@@ -314,6 +320,26 @@ namespace Disk.SDK
         }
 
         /// <summary>
+        /// Gets the disk space information asynchronously.
+        /// Use the <see cref="GetDiskSpaceCompleted"/> event to get a result and handle the completion of the operation.
+        /// </summary>
+        public void GetDiskSpaceAsync()
+        {
+            try
+            {
+                var request = HttpUtilities.CreateRequest(this.accessToken);
+                request.Headers["Depth"] = "0";
+                request.Method = WebdavResources.PropfindMethod;
+                var requestState = new RequestState { Request = request, RequestArgument = WebdavResources.DiskSpaceBody };
+                HttpUtilities.SendFullRequest(requestState, this.ProcessDiskSpaceResponse);
+            }
+            catch (Exception ex)
+            {
+                this.IsPublishedCompleted.SafeInvoke(this, new GenericSdkEventArgs<string>(HttpUtilities.ProcessException(ex)));
+            }
+        }
+
+        /// <summary>
         /// Processes the GetList response.
         /// </summary>
         /// <param name="responseStream">The response stream.</param>
@@ -459,6 +485,23 @@ namespace Disk.SDK
         private void ProcessMoveResponse(SdkException sdkException)
         {
             this.MoveCompleted.SafeInvoke(this, new SdkEventArgs(sdkException));
+        }
+
+        private void ProcessDiskSpaceResponse(Stream responseStream, RequestState requestState, SdkException sdkException)
+        {
+            if (sdkException == null)
+            {
+                using (var reader = new StreamReader(responseStream))
+                {
+                    var responseString = reader.ReadToEnd();
+                    var space = ResponseParser.ParseDiskSapce(responseString);
+                    this.GetDiskSpaceCompleted.SafeInvoke(this, new GenericSdkEventArgs<Tuple<ulong,ulong>>(space));
+                }
+            }
+            else
+            {
+                this.GetListCompleted.SafeInvoke(this, new GenericSdkEventArgs<IEnumerable<DiskItemInfo>>(sdkException));
+            }
         }
     }
 }

@@ -146,6 +146,20 @@ namespace Disk.SDK.Utils {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;d:propfind xmlns:d=&quot;DAV:&quot;&gt;
+        ///  &lt;d:prop&gt;
+        ///    &lt;d:quota-available-bytes/&gt;
+        ///    &lt;d:quota-used-bytes/&gt;
+        ///  &lt;/d:prop&gt;
+        ///&lt;/d:propfind&gt;.
+        /// </summary>
+        internal static string DiskSpaceBody {
+            get {
+                return ResourceManager.GetString("DiskSpaceBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GET.
         /// </summary>
         internal static string GetMethod {

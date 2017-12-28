@@ -70,6 +70,12 @@ namespace Disk.SDK
         event EventHandler<GenericSdkEventArgs<string>> IsPublishedCompleted;
 
         /// <summary>
+        /// Occurs when disk space operation completes.
+        /// <param>Item1 is used-bytes and Item2 is available-bytes</param>
+        /// </summary>
+        event EventHandler<GenericSdkEventArgs<Tuple<ulong, ulong>>> GetDiskSpaceCompleted;
+
+        /// <summary>
         /// The user access token.
         /// </summary>
         /// <value>The access token.</value>
@@ -155,5 +161,11 @@ namespace Disk.SDK
         /// </summary>
         /// <param name="path">The path of the item.</param>
         void IsPublishedAsync(string path);
+
+        /// <summary>
+        /// Gets the disk space information asynchronously.
+        /// Use the <see cref="GetDiskSpaceCompleted"/> event to get a result and handle the completion of the operation.
+        /// </summary>
+        void GetDiskSpaceAsync();
     }
 }

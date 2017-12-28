@@ -158,5 +158,50 @@ namespace Disk.SDK.Utils
         {
             return Regex.Match(resultString, WebdavResources.TokenRegexPattern).Value;
         }
+
+        /// <summary>
+        /// Parses the disk space.
+        /// </summary>
+        /// <param name="responseText">The result string.</param>
+        /// <returns>The parsed access token.</returns>
+        public static Tuple<ulong,ulong> ParseDiskSapce(string responseText)
+        {
+            ulong available = 0;
+            ulong used = 0;
+            var xmlBytes = Encoding.UTF8.GetBytes(responseText);
+            using (var xmlStream = new MemoryStream(xmlBytes))
+            {
+                using (var reader = XmlReader.Create(xmlStream))
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.IsStartElement())
+                        {
+                            switch (reader.Name)
+                            {
+                                case "d:quota-available-bytes":
+                                    reader.Read();
+                                    available = 0;
+                                    if (ulong.TryParse(reader.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out ulong availableSize))
+                                    {
+                                        available = availableSize;
+                                    }
+                                    break;
+                                case "d:quota-used-bytes":
+                                    reader.Read();
+                                    used = 0;
+                                    if (ulong.TryParse(reader.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out ulong usedSize))
+                                    {
+                                        used = usedSize;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return new Tuple<ulong, ulong>(used, available);
+        }
     }
 }

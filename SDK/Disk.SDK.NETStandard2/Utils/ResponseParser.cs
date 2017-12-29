@@ -26,7 +26,7 @@ namespace Disk.SDK.Utils
         /// <returns>The  parsed item.</returns>
         public static DiskItemInfo ParseItem(string currentPath, string responseText)
         {
-            return ParseItems(currentPath, responseText, true).FirstOrDefault();
+            return ParseItems(currentPath, responseText).FirstOrDefault();
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Disk.SDK.Utils
         /// <param name="currentPath">The current path.</param>
         /// <param name="responseText">The response text.</param>
         /// <returns>The list of parsed items.</returns>
-        public static IEnumerable<DiskItemInfo> ParseItems(string currentPath, string responseText, bool ignoreSelf = false)
+        public static IEnumerable<DiskItemInfo> ParseItems(string currentPath, string responseText)
         {
             var items = new List<DiskItemInfo>();
             var xmlBytes = Encoding.UTF8.GetBytes(responseText);
@@ -104,7 +104,7 @@ namespace Disk.SDK.Utils
                         }
                         else if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "d:response")
                         {
-                            if (itemInfo.OriginalFullPath != currentPath || ignoreSelf)
+                            if (itemInfo.OriginalFullPath != currentPath)
                             {
                                 items.Add(itemInfo);
                             }

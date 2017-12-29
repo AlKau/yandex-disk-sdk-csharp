@@ -158,7 +158,7 @@ namespace Disk.SDK
             {
                 var request = HttpUtilities.CreateRequest(this.accessToken, path);
                 request.Method = WebdavResources.PropfindMethod;
-                var requestState = new RequestState { Request = request, RequestArgument = WebdavResources.ItemDetailsBody, ResponseArgument = path };
+                var requestState = new RequestState { Request = request, RequestArgument = WebdavResources.ItemDetailsBody };
                 HttpUtilities.SendFullRequest(requestState, this.ProcessGetItemInfoResponse);
             }
             catch (Exception ex)

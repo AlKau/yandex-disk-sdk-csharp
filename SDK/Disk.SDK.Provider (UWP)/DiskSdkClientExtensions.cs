@@ -3,7 +3,6 @@
  */
 
 using System;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using Disk.SDK.Utils;
@@ -11,6 +10,7 @@ using Windows.Foundation;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Security.Authentication.Web;
 using Windows.Storage;
+using Windows.Web.Http;
 
 namespace Disk.SDK.Provider
 {
@@ -87,6 +87,96 @@ namespace Disk.SDK.Provider
                 throw HttpUtilities.ProcessException(ex);
             }
         }
+
+
+        /// <summary>
+        /// Starts to download the file as an asynchronous operation.
+        /// </summary>
+        /// <param name="sdkClient">The SDK client.</param>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="file">The file.</param>
+        /// <param name="progress">The progress handler.</param>
+        public static async Task<IHttpContent> GetFileContentAsync(this IDiskSdkClient sdkClient, string path, ulong start = 0, ulong? end = null)
+        {
+            try
+            {
+                var uri = new Uri(ResourceProvider.Get("ApiUrl") + path);
+
+                using (var httpClient = new HttpClient())
+                {
+
+                    httpClient.DefaultRequestHeaders.Add("X-Version", "1");
+                    httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
+                    httpClient.DefaultRequestHeaders.Add("TE", "chunked");
+                    httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
+                    httpClient.DefaultRequestHeaders.Add("Authorization", "OAuth " + sdkClient.AccessToken);
+                    httpClient.DefaultRequestHeaders.Add("X-Yandex-SDK-Version", "winui, 1.0");
+
+                    var range = end != null ? $"bytes={start}-{end}" : $"bytes={start}-";
+                    httpClient.DefaultRequestHeaders.Add("Range", range);
+
+                    using (var response = await httpClient.GetAsync(uri))
+                    {
+                        response.EnsureSuccessStatusCode();
+                        return response.Content;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw HttpUtilities.ProcessException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Starts to download the file as an asynchronous operation.
+        /// </summary>
+        /// <param name="sdkClient">The SDK client.</param>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="file">The file.</param>
+        /// <param name="progress">The progress handler.</param>
+        public static async Task<ulong?> GetFileContentLengthAsync(this IDiskSdkClient sdkClient, string path)
+        {
+            try
+            {
+                var uri = new Uri(ResourceProvider.Get("ApiUrl") + path);
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Add("X-Version", "1");
+                    httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
+                    httpClient.DefaultRequestHeaders.Add("TE", "chunked");
+                    httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
+                    httpClient.DefaultRequestHeaders.Add("Authorization", "OAuth " + sdkClient.AccessToken);
+                    httpClient.DefaultRequestHeaders.Add("X-Yandex-SDK-Version", "winui, 1.0");
+                    httpClient.DefaultRequestHeaders.Add("Range", "");
+
+                    using (var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        if(response.Content?.Headers?.ContentLength != null)
+                        {
+                            return response.Content.Headers.ContentLength;
+                        }
+
+                        if (response.Headers != null && 
+                            response.Headers.TryGetValue("Content-Length", out var strLen) && 
+                            ulong.TryParse(strLen, out var len))
+                        {
+                            return len;
+                        }
+
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw HttpUtilities.ProcessException(ex);
+            }
+        }
+
 
         /// <summary>
         /// Starts to upload the file as an asynchronous operation.

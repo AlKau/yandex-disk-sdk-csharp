@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Yandex.Disk.SDK.Provider(UWP)</id>
+        <version>1.0.2</version>
+        <title>Yandex Disk SDK Provider (UWP)</title>
+        <authors>AlKau</authors>
+        <licenseUrl>https://yandex.ru/legal/sdk_agreement/</licenseUrl>
+        <projectUrl>https://github.com/AlKau/yandex-disk-sdk-csharp.git</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Yandex Disk SDK provider</description>
+        <tags>disk, cloud, yandex</tags>
+        <dependencies>
+            <dependency id="Yandex.Disk.SDK.NETStandard2" version="1.0.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="Disk.SDK.Provider (UWP)\bin\Release\Disk.SDK.Provider.dll" target="ref\uap10.0\Disk.SDK.Provider.dll" />
+        <file src="Disk.SDK.Provider (UWP)\bin\Release\Disk.SDK.Provider.pri" target="ref\uap10.0\Disk.SDK.Provider.pri" />
+        <file src="Disk.SDK.Provider (UWP)\bin\ARM\Release\Disk.SDK.Provider.dll" target="runtimes\win10-arm\lib\uap10.0\Disk.SDK.Provider.dll" />
+        <file src="Disk.SDK.Provider (UWP)\bin\ARM\Release\Disk.SDK.Provider.pri" target="runtimes\win10-arm\lib\uap10.0\Disk.SDK.Provider.pri" />
+        <file src="Disk.SDK.Provider (UWP)\bin\x64\Release\Disk.SDK.Provider.dll" target="runtimes\win10-x64\lib\uap10.0\Disk.SDK.Provider.dll" />
+        <file src="Disk.SDK.Provider (UWP)\bin\x64\Release\Disk.SDK.Provider.pri" target="runtimes\win10-x64\lib\uap10.0\Disk.SDK.Provider.pri" />
+        <file src="Disk.SDK.Provider (UWP)\bin\x86\Release\Disk.SDK.Provider.dll" target="runtimes\win10-x86\lib\uap10.0\Disk.SDK.Provider.dll" />
+        <file src="Disk.SDK.Provider (UWP)\bin\x86\Release\Disk.SDK.Provider.pri" target="runtimes\win10-x86\lib\uap10.0\Disk.SDK.Provider.pri" />
+    </files>
+</package>

@@ -11,6 +11,7 @@ using Windows.Networking.BackgroundTransfer;
 using Windows.Security.Authentication.Web;
 using Windows.Storage;
 using Windows.Web.Http;
+using Windows.Web.Http.Filters;
 
 namespace Disk.SDK.Provider
 {
@@ -19,6 +20,27 @@ namespace Disk.SDK.Provider
     /// </summary>
     public static class DiskSdkClientExtensions
     {
+        private static void EnsureSuccessStatusCode(HttpResponseMessage responce)
+        {
+            if(responce.IsSuccessStatusCode)
+            {
+                return;
+            }
+
+            switch(responce.StatusCode)
+            {
+                case HttpStatusCode.Unauthorized:
+                    throw new SdkNotAuthorizedException();
+                case HttpStatusCode.BadRequest:
+                    throw new SdkBadRequestException();
+                case HttpStatusCode.NotFound:
+                    throw new SdkBadParameterException();
+            }
+
+            responce.EnsureSuccessStatusCode();
+        }
+
+
         /// <summary>
         /// Starts the asynchronous authentication operation.
         /// </summary>
@@ -101,10 +123,10 @@ namespace Disk.SDK.Provider
             try
             {
                 var uri = new Uri(ResourceProvider.Get("ApiUrl") + path);
-
-                using (var httpClient = new HttpClient())
+                HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+                filter.AllowUI = false;
+                using (var httpClient = new HttpClient(filter))
                 {
-
                     httpClient.DefaultRequestHeaders.Add("X-Version", "1");
                     httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
                     httpClient.DefaultRequestHeaders.Add("TE", "chunked");
@@ -117,10 +139,14 @@ namespace Disk.SDK.Provider
 
                     using (var response = await httpClient.GetAsync(uri))
                     {
-                        response.EnsureSuccessStatusCode();
+                        EnsureSuccessStatusCode(response);
                         return response.Content;
                     }
                 }
+            }
+            catch (SdkException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -140,8 +166,9 @@ namespace Disk.SDK.Provider
             try
             {
                 var uri = new Uri(ResourceProvider.Get("ApiUrl") + path);
-
-                using (var httpClient = new HttpClient())
+                HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+                filter.AllowUI = false;
+                using (var httpClient = new HttpClient(filter))
                 {
                     httpClient.DefaultRequestHeaders.Add("X-Version", "1");
                     httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
@@ -153,7 +180,7 @@ namespace Disk.SDK.Provider
 
                     using (var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead))
                     {
-                        response.EnsureSuccessStatusCode();
+                        EnsureSuccessStatusCode(response);
 
                         if(response.Content?.Headers?.ContentLength != null)
                         {
@@ -170,6 +197,10 @@ namespace Disk.SDK.Provider
                         return null;
                     }
                 }
+            }
+            catch (SdkException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

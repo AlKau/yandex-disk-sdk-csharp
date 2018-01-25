@@ -208,6 +208,37 @@ namespace Disk.SDK.Provider
             }
         }
 
+        /// <summary>
+        /// Gets file thumbnail
+        /// </summary>
+        /// <param name="sdkClient">The SDK client.</param>
+        /// <param name="path">The path to the file.</param>
+        public static async Task<IHttpContent> GetFileThumbnailAsync(this IDiskSdkClient sdkClient, string path)
+        {
+            try
+            {
+                var uri = new Uri($"{ResourceProvider.Get("ApiUrl")}{path}?preview&size=XS");
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Add("X-Version", "1");
+                    httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
+                    httpClient.DefaultRequestHeaders.Add("Authorization", "OAuth " + sdkClient.AccessToken);
+                    httpClient.DefaultRequestHeaders.Add("X-Yandex-SDK-Version", "winui, 1.0");
+
+                    using (var response = await httpClient.GetAsync(uri))
+                    {
+                        response.EnsureSuccessStatusCode();
+                        return response.Content;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw HttpUtilities.ProcessException(ex);
+            }
+        }
+
 
         /// <summary>
         /// Starts to upload the file as an asynchronous operation.

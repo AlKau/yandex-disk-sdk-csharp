@@ -218,8 +218,9 @@ namespace Disk.SDK.Provider
             try
             {
                 var uri = new Uri($"{ResourceProvider.Get("ApiUrl")}{path}?preview&size=XS");
-
-                using (var httpClient = new HttpClient())
+                HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+                filter.AllowUI = false;
+                using (var httpClient = new HttpClient(filter))
                 {
                     httpClient.DefaultRequestHeaders.Add("X-Version", "1");
                     httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
@@ -228,10 +229,14 @@ namespace Disk.SDK.Provider
 
                     using (var response = await httpClient.GetAsync(uri))
                     {
-                        response.EnsureSuccessStatusCode();
+                        EnsureSuccessStatusCode(response);
                         return response.Content;
                     }
                 }
+            }
+            catch (SdkException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

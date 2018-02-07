@@ -15,6 +15,24 @@ using Windows.Web.Http.Filters;
 
 namespace Disk.SDK.Provider
 {
+    public class UserInfo
+    {
+        public string Login { get; private set; }
+        public string FIO { get; private set; }
+        public string FirstName { get; private set; }
+        public string LastName { get; private set; }
+        public string Country { get; private set; }
+
+        public UserInfo(string login, string fio, string firstName, string lastName, string country)
+        {
+            Login = login;
+            FIO = fio;
+            FirstName = firstName;
+            LastName = lastName;
+            Country = country;
+        }
+    }
+
     /// <summary>
     /// Disk SDK extension methods with upload\download operations for WinRT platform.
     /// </summary>
@@ -22,12 +40,12 @@ namespace Disk.SDK.Provider
     {
         private static void EnsureSuccessStatusCode(HttpResponseMessage responce)
         {
-            if(responce.IsSuccessStatusCode)
+            if (responce.IsSuccessStatusCode)
             {
                 return;
             }
 
-            switch(responce.StatusCode)
+            switch (responce.StatusCode)
             {
                 case HttpStatusCode.Unauthorized:
                     throw new SdkNotAuthorizedException();
@@ -61,7 +79,7 @@ namespace Disk.SDK.Provider
                     var responseData = new Uri(authResult.ResponseData);
                     var fragment = responseData.Fragment;
 
-                    if(!string.IsNullOrEmpty(fragment) && fragment[0].Equals('#'))
+                    if (!string.IsNullOrEmpty(fragment) && fragment[0].Equals('#'))
                     {
                         fragment = fragment.Remove(0, 1).Insert(0, "?");
                     }
@@ -182,13 +200,13 @@ namespace Disk.SDK.Provider
                     {
                         EnsureSuccessStatusCode(response);
 
-                        if(response.Content?.Headers?.ContentLength != null)
+                        if (response.Content?.Headers?.ContentLength != null)
                         {
                             return response.Content.Headers.ContentLength;
                         }
 
-                        if (response.Headers != null && 
-                            response.Headers.TryGetValue("Content-Length", out var strLen) && 
+                        if (response.Headers != null &&
+                            response.Headers.TryGetValue("Content-Length", out var strLen) &&
                             ulong.TryParse(strLen, out var len))
                         {
                             return len;
@@ -231,6 +249,81 @@ namespace Disk.SDK.Provider
                     {
                         EnsureSuccessStatusCode(response);
                         return response.Content;
+                    }
+                }
+            }
+            catch (SdkException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw HttpUtilities.ProcessException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets user info
+        /// </summary>
+        /// <param name="sdkClient">The SDK client.</param>
+        public static async Task<UserInfo> GetUserInfoAsync(this IDiskSdkClient sdkClient)
+        {
+            try
+            {
+                var uri = new Uri($"{ResourceProvider.Get("ApiUrl")}?userinfo");
+                HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+                filter.AllowUI = false;
+                using (var httpClient = new HttpClient(filter))
+                {
+                    httpClient.DefaultRequestHeaders.Add("X-Version", "1");
+                    httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
+                    httpClient.DefaultRequestHeaders.Add("Authorization", "OAuth " + sdkClient.AccessToken);
+                    httpClient.DefaultRequestHeaders.Add("X-Yandex-SDK-Version", "winui, 1.0");
+
+                    using (var response = await httpClient.GetAsync(uri))
+                    {
+                        EnsureSuccessStatusCode(response);
+                        var rawInfo = await response.Content.ReadAsStringAsync();
+
+                        var parts = rawInfo.Split("\n", StringSplitOptions.RemoveEmptyEntries);
+
+                        string login = string.Empty;
+                        string fio = string.Empty;
+                        string firstName = string.Empty;
+                        string lastName = string.Empty;
+                        string country = string.Empty;
+
+                        const string loginPrefix = "login:";
+                        const string fioPrefix = "fio:";
+                        const string firstnamePrefix = "firstname:";
+                        const string lastnamePrefix = "lastname:";
+                        const string countryPrefix = "country:";
+
+                        foreach (var part in parts)
+                        {
+                            if (part.StartsWith(loginPrefix))
+                            {
+                                login = part.Substring(loginPrefix.Length);
+                            }
+                            else if (part.StartsWith(fioPrefix))
+                            {
+                                fio = part.Substring(fioPrefix.Length);
+                            }
+                            else if (part.StartsWith(firstnamePrefix))
+                            {
+                                firstName = part.Substring(firstnamePrefix.Length);
+                            }
+                            else if (part.StartsWith(lastnamePrefix))
+                            {
+                                lastName = part.Substring(lastnamePrefix.Length);
+                            }
+                            else if (part.StartsWith(countryPrefix))
+                            {
+                                country = part.Substring(countryPrefix.Length);
+                            }
+                        }
+
+                        return new UserInfo(login, fio, firstName, lastName, country);
                     }
                 }
             }

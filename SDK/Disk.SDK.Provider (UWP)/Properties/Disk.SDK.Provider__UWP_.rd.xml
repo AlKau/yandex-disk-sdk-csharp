@@ -27,7 +27,6 @@
 <Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
   <Library Name="Disk.SDK.Provider__UWP_">
 
-  	<!-- add directives for your library here -->
-
+    <Type Name="Disk.SDK.Provider.CommonService" Activate="Required All"/>
   </Library>
 </Directives>
